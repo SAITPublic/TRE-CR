@@ -1,0 +1,74 @@
+#ifndef __MTCP_RESTART_PLUGIN_H__
+#define __MTCP_RESTART_PLUGIN_H__
+#include <sys/types.h>
+#include <stdint.h>
+#include "config.h"
+#include "restore_info.h"
+
+typedef void (*fnptr_t)();
+
+// FIXME: Much of this is duplicated in ../lower-half/lower_half_api.h
+
+// typedef struct __MpiMemRange
+// {
+//   void *start;
+//   void *end;
+// } MemRange_t;
+
+// typedef struct __MpiMmapInfo
+// {
+//   void *addr;
+//   size_t len;
+//   int unmapped; 
+//   int guard;
+// } MpiMmapInfo_t;
+
+// typedef struct __MpiLhCoreRegions
+// {
+//   void *start_addr; // Start address of a LH memory segment
+//   void *end_addr; // End address
+//   int prot; // Protection flag
+// } LhCoreRegions_t;
+
+// The transient proxy process introspects its memory layout and passes this
+// information back to the main application process using this struct.
+// typedef struct LowerHalfInfo
+// {
+//   void *startText;
+//   void *endText;
+//   void *endOfHeap;
+//   void *libc_start_main;
+//   void *main;
+//   void *libc_csu_init;
+//   void *libc_csu_fini;
+//   void *fsaddr;
+//   uint64_t lh_AT_PHNUM;
+//   uint64_t lh_AT_PHDR;
+//   void *g_appContext;
+//   void *lh_dlsym;
+//   void *getRankFptr;
+//   void *parentStackStart;
+//   void *updateEnvironFptr;
+//   void *getMmappedListFptr;
+//   void *resetMmappedListFptr;
+//   int numCoreRegions;
+//   void *getLhRegionsListFptr;
+//   MemRange_t memRange;
+// } MpiLowerHalfInfo_t;
+
+//typedef MpiLowerHalfInfo_t PluginInfo;
+
+//typedef struct RestoreInfo RestoreInfo;
+#ifdef __cplusplus
+extern "C" {
+#endif
+void mtcp_plugin_hook(RestoreInfo *rinfo);
+int getCkptImageByDir(RestoreInfo *rinfo,
+                      char *buffer,
+                      size_t buflen,
+                      int rank);
+char* getCkptImageByRank(int rank, char **argv);
+#ifdef __cplusplus
+}
+#endif
+#endif // #ifndef __MTCP_RESTART_PLUGIN_H__

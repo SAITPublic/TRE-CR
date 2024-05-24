@@ -1,0 +1,17 @@
+cuCtxCreate 2
+cuCtxDestroy 2
+cuDeviceGet 5
+cuDeviceGetAttribute 49
+cuDeviceGetCount 4
+cuDeviceGetName 2
+cuDeviceGetPCIBusId 1
+cuDeviceTotalMem 2
+cuInit 1
+cuLaunchKernel 2
+cuMemAlloc 2
+cuMemFree 2
+cuMemcpyDtoH 2
+cuModuleGetFunction 4
+cuModuleLoadDataEx 2
+cuStreamCreate 2
+cuStreamDestroy 2

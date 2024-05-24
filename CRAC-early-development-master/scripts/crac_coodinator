@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# if [ -n "$1" ]; then
+#   echo "USAGE:  $0 [--verbose] [DMTCP_OPTIONS ...]"
+#   echo "        For other DMTCP coordinator options, do:"
+#   echo "          $0 --help"
+#   exit 1
+# fi
+
+mana_coord=$0
+dir=`dirname $0`
+
+options=""
+verbose=0
+help=0
+while [ -n "$1" ]; do
+  if [ "$1" == --verbose ]; then
+    verbose=1
+  elif [ "$1" == --help ]; then
+    help=1
+  else
+    options="$options $1"
+  fi
+  shift
+done
+
+if [ "$help" -eq 1 ]; then
+  $dir/dmtcp_coordinator --help $options
+  exit 0
+fi
+
+if [ -e $HOME/.mana ]; then
+  echo "SLURM_JOB_ID: $SLURM_JOB_ID" >> $HOME/.mana
+fi
+
+exec $dir/dmtcp_coordinator --mpi -p $options

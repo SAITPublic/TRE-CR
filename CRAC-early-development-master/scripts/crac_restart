@@ -1,0 +1,98 @@
+#!/bin/sh
+
+MPI_ETHERNET_INTERFACE=\
+`ip addr |grep -B1 link/ether | head -1 |sed -e 's%[^ ]*: \([^ ]*\): .*%\1%'`
+
+dir=`dirname $0`
+
+if [ -z "$1" ]; then
+  echo "USAGE:  $0 [--verbose] [DMTCP_OPTIONS ...] [--ckptdir DIR]" \\
+  echo "                                                       MANA_EXECUTABLE"
+  echo "        For DMTCP options, do: $0 --help"
+  echo "  NOTE: MANA_EXECUTABLE must be compiled with libmpidummy.so"
+  echo "        See $dir/../contrib/mpi-proxy-split/test/ for examples."
+  exit 1
+fi
+
+options="-j"
+help=0
+mpi_options=""
+mpirun_found=0
+mpi_process_num=0
+mpi_hosts=""
+restart_dir=""
+while [ -n "$1" ]; do
+  if [ "$1" == --help ]; then
+    help=1
+  elif [ "$1" == --mpi ]; then
+    mpirun_found=1
+  elif [ "$1" == -np ]; then
+    shift
+    mpi_process_num="$1"
+  elif [ "$1" == --hosts ]; then
+    shift
+    mpi_hosts="$1"
+  elif [ "$1" == --restartdir ]; then
+    shift
+    restart_dir="$1"
+  else
+    options="$options $1"
+  fi
+  shift
+done
+
+if [ "$help" -eq 1 ]; then
+  $dir/dmtcp_restart --help $options
+  exit 0
+fi
+
+if [ "$mpirun_found" -eq 1 ]; then
+  mpi_options="$mpi_options ${MPI_BIN}/mpirun -iface ${MPI_ETHERNET_INTERFACE} -np $mpi_process_num"
+  if [ -n "$mpi_hosts" ]; then
+    mpi_options="$mpi_options --hosts $mpi_hosts"
+  fi
+fi
+
+#Exit if restartdir is null
+if [ -z "$restart_dir" ]; then
+  echo "Please set --restartdir dirX..."
+  exit 0
+fi
+
+host=`hostname`
+submissionHost=`grep Host: $HOME/.coordinfo | sed -e 's%Host: %%'|sed -e 's% .*$%%'`
+submissionPort=`grep Port: $HOME/.coordinfo | sed -e 's%Port: %%'|sed -e 's% .*$%%'`
+
+echo $dir
+coordinator_found=0
+$dir/dmtcp_command -s -h $submissionHost -p $submissionPort 1>/dev/null \
+                                                    && coordinator_found=1
+#Check dmtcp_coordinator running or not
+if [ "$coordinator_found" == 0 ]; then
+  echo "*** Checking for coordinator:"
+  set -x
+    $dir/dmtcp_command --status --coord-host $submissionHost \
+                                --coord-port $submissionPort
+  set +x
+  echo "  No coordinator detected.   Try:"
+  echo "    $dir/mana_coordinator"
+  echo "  Or:"
+  echo "    $dir/dmtcp_coordinator -p 7791"
+  exit 5
+fi
+
+plugindir="`dirname $0`/../lib/plugin"
+# TEMPORARY WORKAROUND:  set MPICH_SMP_SINGLE_COPY_OFF=1
+#   In VASP5 with RPA, it failed on restart, trying to copy to a
+#   /SYSV0* file (created by shmat or XPMEM), but mpi_plugin.cpp says that
+#   /SYSV0* is not saved at ckpt, and so its data is not saved and restored.
+#   NOTE: The upper half should not know about this file. Why do we
+#         need to restore pre-ckpt data on a new MPICH in the lower half? 
+#         (We could create xpmam plugin for DMTCP, but it shouldn't be needed.)
+
+exec $mpi_options $mpi_run \
+  $dir/dmtcp_restart  --coord-host $submissionHost \
+          --coord-port $submissionPort \
+          --cuda \
+          --restartdir $restart_dir \
+          $options
