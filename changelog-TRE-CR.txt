@@ -1,0 +1,21 @@
+*******************change history for TRE-CR****************************
+
+Our TRE-CR project is developed based on CRAC which is a checkpoint and restart architecture for CUDA, link is :
+https://github.com/JainTwinkle/CRAC-early-development
+
+In our project, we mainly do the following changes involving new features support, performance optimization and bug fix.
+
+The main change can be summarized as below : 
+
+1) we optimize writing files time consumption during checkpointing stage by adopting NVComp(Nvidia Compress ) library and 
+   incremental method so that greatly decrease the checkpointing time overhead.
+2) we fix the memory consistency problems by using GEMM(General Matrix Multiplication) strategy.
+3) we support CUDA multi-thread function in checkpointing solution so that enhance the runtime efficiency of checkpointing 
+   GPU applications.
+4) we optimize the locking mechanism which also decrease the runtime overhead during checkpointing process.
+5) we support timing algorithm which is a kind of dynamic checkpointing interval adjustment strategy proposed by our team.
+6) we support NCCL(NVIDIA Collective Communications Library)-related API and interface which ensure the correct checkpointing of 
+   NCCL-based applications.
+  
+   
+*******************change history for TRE-CR****************************
