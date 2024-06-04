@@ -33,21 +33,29 @@ For compile and simple test the TRE-CR for checkpointing and restore GPU applica
 ### 3.1 Compile
 
 ```
-cd TRE-CR/CRAC-early-development-master/
+cd TRE-CR/
 ./configure
 make
-cd TRE-CR/CRAC-early-development-master/contrib/split-cuda
+cd TRE-CR/contrib/trecr-mpi_interceptor
+make
+make install
+cd TRE-CR/contrib/trecr-cuda_interceptor
 make
 ```
 
-After compiled finished, users can generate a bin/ diretory under CRAC-early-development-master/ which contains binary execution file for launch, restart et al and kernel-loader, cuda-plugin file under TRE-CR/CRAC-early-development-master/contrib/split-cuda directory.
+After compiled finished, users can generate a bin/ diretory under TRE-CR/ which contains binary execution file for launch, restart et al and kernel-loader, cuda-plugin file under TRE-CR/contrib/trecr-cuda_interceptor/ directory.
 
 ### 3.2 Run
 
-For running the TRE-CR with simple GPU applications, we provide a Lammps sample for reference : 
+For running the TRE-CR with simple GPU applications, we provide a sample for reference : 
 
 ```
-/home/TRE-CR/CRAC-early-development-master/bin/dmtcp_launch --cuda --coord-host host_addr --coord-port port_number --kernel-loader /home/TRE-CR/CRAC-early-development-master/contrib/split-cuda/kernel-loader.exe --target-ld /usr/local/glibc-2.31/lib/ld-linux-x86-64.so.2 --with-plugin /home/TRE-CR/CRAC-early-development-master/contrib/split-cuda/libdmtcp_split-cuda.so -j /home/Lammps/bin/lmp -sf gpu -pk gpu 1 -in in.1k
+Step 1:
+Start coordinator:
+$ <trecr_dir>/bin/trecr_coordinator –port 7790
+Step 2:
+Open a new terminal, and start demo application:
+$<trecr_dir>/contrib/trecr-cuda_interceptor/trecrproxy.exe –target-ld <libc2.31 dir>/lib/ld-linuxx86-64.so.2 –with-plugin <trecr_dir>/contrib/trecr-cuda_interceptor/libcuda-interceptor.so -j <sample_dir>/simpleIPC
 ```
 
 ## Contact
