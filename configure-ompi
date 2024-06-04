@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# These optional autoconf variables will be configured
+#     via contrib/mpi-proxy-split/Makefie_config.in
+
+# Do not add spaces to the next two lines.
+# If MPI will be used on a different computer than where you configure,
+#   then maybe replace this with the result of 'ip addr' on the compute nodes.
+MPI_ETHERNET_INTERFACE=\
+`ip addr |grep -B1 link/ether | head -1 |sed -e 's%[^ ]*: \([^ ]*\): .*%\1%'`
+
+# This works on our local test computer (Ubuntu-18.04).
+# But also read the note right after this command.
+./configure MANA_USE_OPENMPI=1
