@@ -2,7 +2,7 @@
 
 ## Contents
 
-  [1. Introduction](#1-introduction)
+  [1. Introduction](#1-introduction)<br>
   [2. Overview](#1-overview)  
   [3. Contribution process](#2-contribution-process)  
   [4. Compile and Run](#3-compile-and-run)  
@@ -10,12 +10,12 @@
 
 ## 1.Introduction
  
-This is an enhanced DMTCP(https://github.com/dmtcp/dmtcp.git) plugin to checkpoint- restart CUDA and MPI application with noval split-process architecture, it is developed upon CRAC(https://github.com/DMTCP-CRAC/CRAC-early-development) and MANA(https://github.com/mpickpt/mana). The Plugin code contains two part:1)CUDA plugin, the code is in the contrib/trecr-cuda_interceptor directory, 2)MPI plugin, the code is in the contrib/trecr-mpi_interceptor. 
+This is an enhanced DMTCP(https://github.com/dmtcp/dmtcp.git) plugin to checkpoint- restart CUDA and MPI application with noval split-process architecture, it is developed upon CRAC(https://github.com/DMTCP-CRAC/CRAC-early-development) and MANA(https://github.com/mpickpt/mana). The Plugin code contains two part:1)CUDA plugin, the code is in the contrib/trecr-cuda_interceptor directory, 2)MPI plugin, the code is in the contrib/trecr-mpi_interceptor. <br>
 
-The main contribution of TRE-CR:
-GMMU - GPU Memory Management Unit(contrib/trecr-cuda_interceptor/lh/mmu)
-Incremental and Compression checkpoint - Increatal(contrib/trecr-cuda_interceptor/lh/increamental) and Compression(contrib/trecr-cuda_interceptor/uh)
-NCCL application support
+The main contribution of TRE-CR:<br>
+GMMU - GPU Memory Management Unit(contrib/trecr-cuda_interceptor/lh/mmu)<br>
+Incremental and Compression checkpoint - Increatal(contrib/trecr-cuda_interceptor/lh/increamental) and Compression(contrib/trecr-cuda_interceptor/uh)<br>
+NCCL application support<br>
 
 ## 2. Overview
 
